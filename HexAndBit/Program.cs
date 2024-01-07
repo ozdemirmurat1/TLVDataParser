@@ -4,7 +4,8 @@
 Console.Write("Enter HexadecimalValue:");
 
 var readHexaDecimalValue = Console.ReadLine()!;
-var h = readHexaDecimalValue.Trim();
+var h = readHexaDecimalValue.Replace(" ", ""); 
+
 
 var tagListValue = new List<TagList>();
 
@@ -105,10 +106,20 @@ string RecursiveLoopTagValues(int x, int y, string h)
 
 string Dondur()
 {
+
+    Console.ForegroundColor = ConsoleColor.Red;
+
+    Console.WriteLine("Emv Value :" + " " + h);
+
+    Console.ResetColor();
+    
+
     foreach (var item in tagListValue)
     {
+        Console.ForegroundColor = ConsoleColor.DarkCyan;
         Console.WriteLine("Tag: " + " " + item.TagValue + " " + "Length" + " " + item.TagLentghValue + " " + "Value" + " " + item.DecimalTagValue);
     }
+    Console.ResetColor();
 
     return string.Empty;
 }
