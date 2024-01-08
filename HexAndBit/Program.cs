@@ -57,6 +57,10 @@ void RecursiveLoopTagValues(int x, int y, string h)
 static bool IsConstructedTag(string tag)
 {
     int firstByte = Convert.ToInt32(tag.Length > 0 ? tag.Substring(0, 2) : "00", 16);
+
+    // Constructed kontrolü yapılır. Bit 6 
+    //0x20(yani 32 ondalık veya 00100000 ikilik)
+
     return (firstByte & 0x20) == 0x20;
 }
 
