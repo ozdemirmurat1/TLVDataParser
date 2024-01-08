@@ -1,69 +1,38 @@
 ﻿using HexAndBit;
 
 
-Console.Write("Enter HexadecimalValue:");
+List<TagList> tagListValue = new List<TagList>();
 
+Console.Write("Enter HexadecimalValue: ");
 var readHexaDecimalValue = Console.ReadLine()!;
-var h = readHexaDecimalValue.Replace(" ", ""); 
+var h = readHexaDecimalValue.Replace(" ", "");
 
-
-var tagListValue = new List<TagList>();
-
-int x = 0;
-int y = 2;
-int count = 0;
-
-var tagValues = RecursiveLoopTagValues(x, y, h);
-
-string RecursiveLoopTagValues(int x, int y, string h)
+RecursiveLoopTagValues(0, 2, h);
+foreach (var tag in tagListValue)
 {
-    string byteData = "";
-    string subHex = "";
-    string tagValue = "";
-    string tagLengthValue = "";
-    string value = "";
-    string valueTag = "";
-    long decimalTagValue;
-    string gg = "";
+    Console.WriteLine($"Tag: {tag.TagValue}, Length: {tag.TagLentghValue}, Value: {tag.DecimalTagValue}");
+}
 
-    ;
-
-
-    // YAPILACAK
+void RecursiveLoopTagValues(int x, int y, string h)
+{
     if (h.Length == 0)
-        return Dondur();
-    subHex = h.Substring(x, y);
+        return;
 
+    string subHex = h.Substring(x, y);
+    string value = ConverterHexAndBinary.HexToBinary2(subHex);
+    string byteData = value.Substring(2);
 
-
-    if (subHex.Length > 0)
-        value = ConverterHexAndBinary.HexToBinary2(subHex);
-
-
-    byteData = value.Substring(2);
-    // Geri kalan işlemler
-
-
-    if ((byteData == "011111"))
+    if (byteData == "011111")
     {
         RecursiveLoopTagValues(x + 2, y, h);
-
     }
     else
     {
         x = x + 2;
-
-        tagValue = h?.Substring(0, x);
-        // Geri kalan işlemler
-
-        tagLengthValue = h?.Substring(x, 2);
-
-
-        decimalTagValue = ConverterHexAndBinary.HexToDecimal(tagLengthValue);
-
-
-        // Sıkıntı çıkartan yer
-        valueTag = (h?.Substring(x + 2, (int)decimalTagValue * 2))!;
+        string tagValue = h.Substring(0, x);
+        string tagLengthValue = h.Substring(x, 2);
+        long decimalTagValue = ConverterHexAndBinary.HexToDecimal(tagLengthValue);
+        string valueTag = h.Substring(x + 2, (int)decimalTagValue * 2);
 
         tagListValue.Add(new TagList
         {
@@ -72,57 +41,25 @@ string RecursiveLoopTagValues(int x, int y, string h)
             DecimalTagValue = valueTag,
         });
 
+        string remaining = h.Substring(tagValue.Length + tagLengthValue.Length + (int)decimalTagValue * 2);
 
-
-        gg = h?.Substring(tagValue.Length + tagLengthValue.Length + (int)decimalTagValue * 2);
-
-
-        var foundItem = tagListValue.FirstOrDefault(x => x.TagValue == "70");
-
-        // 9F'Lİ datanın buraya girmesi lazım.
-
-        if (foundItem != null && count == 0)
+        if (IsConstructedTag(tagValue))
         {
-            if (gg.Length > 0 && count != 0)
-            {
-                RecursiveLoopTagValues(x = 0, y, gg);
-                count++;
-            }
-
-            else if (foundItem != null && count == 0)
-                count++;
-            RecursiveLoopTagValues(x = 0, y, valueTag);
-
+            RecursiveLoopTagValues(0, 2, valueTag);
         }
-        else
+        else if (remaining.Length > 0)
         {
-            RecursiveLoopTagValues(x = 0, y, gg);
+            RecursiveLoopTagValues(0, 2, remaining);
         }
-
     }
-    return "";
-
 }
 
-string Dondur()
+static bool IsConstructedTag(string tag)
 {
-
-    Console.ForegroundColor = ConsoleColor.Red;
-
-    Console.WriteLine("Emv Value :" + " " + h);
-
-    Console.ResetColor();
-    
-
-    foreach (var item in tagListValue)
-    {
-        Console.ForegroundColor = ConsoleColor.DarkCyan;
-        Console.WriteLine("Tag: " + " " + item.TagValue + " " + "Length" + " " + item.TagLentghValue + " " + "Value" + " " + item.DecimalTagValue);
-    }
-    Console.ResetColor();
-
-    return string.Empty;
+    int firstByte = Convert.ToInt32(tag.Length > 0 ? tag.Substring(0, 2) : "00", 16);
+    return (firstByte & 0x20) == 0x20;
 }
+
 
 
 
