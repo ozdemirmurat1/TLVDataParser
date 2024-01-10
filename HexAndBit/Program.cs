@@ -10,7 +10,9 @@ var h = readHexaDecimalValue.Replace(" ", "");
 RecursiveLoopTagValues(0, 2, h);
 foreach (var tag in tagListValue)
 {
+    Console.ForegroundColor = ConsoleColor.Blue;
     Console.WriteLine($"Tag: {tag.TagValue}, Length: {tag.TagLentghValue}, Value: {tag.DecimalTagValue}");
+    Console.ResetColor();
 }
 
 void RecursiveLoopTagValues(int x, int y, string h)
@@ -28,40 +30,61 @@ void RecursiveLoopTagValues(int x, int y, string h)
     }
     else
     {
-        x = x + 2;
-        string tagValue = h.Substring(0, x);
-        string tagLengthValue = h.Substring(x, 2);
-        long decimalTagValue = ConverterHexAndBinary.HexToDecimal(tagLengthValue);
-        string valueTag = h.Substring(x + 2, (int)decimalTagValue * 2);
+        // TRY CATCH KONTROLÜ YAPILACAK
 
-        tagListValue.Add(new TagList
+        try
         {
-            TagValue = tagValue,
-            TagLentghValue = tagLengthValue,
-            DecimalTagValue = valueTag,
-        });
+            x = x + 2;
+            string tagValue = h.Substring(0, x);
+            string tagLengthValue = h.Substring(x, 2);
+            long decimalTagValue = ConverterHexAndBinary.HexToDecimal(tagLengthValue);
+            string valueTag = h.Substring(x + 2, (int)decimalTagValue * 2);
 
-        string remaining = h.Substring(tagValue.Length + tagLengthValue.Length + (int)decimalTagValue * 2);
+            tagListValue.Add(new TagList
+            {
+                TagValue = tagValue,
+                TagLentghValue = tagLengthValue,
+                DecimalTagValue = valueTag,
+            });
 
-        if (IsConstructedTag(tagValue))
-        {
-            RecursiveLoopTagValues(0, 2, valueTag);
+            string remaining = h.Substring(tagValue.Length + tagLengthValue.Length + (int)decimalTagValue * 2);
+
+            if (IsConstructedTag(tagValue))
+            {
+                RecursiveLoopTagValues(0, 2, valueTag);
+            }
+            else if (remaining.Length > 0)
+            {
+                RecursiveLoopTagValues(0, 2, remaining);
+            }
         }
-        else if (remaining.Length > 0)
+        catch (Exception)
         {
-            RecursiveLoopTagValues(0, 2, remaining);
+            
+            return;
         }
+        
     }
 }
 
+// TRY CATCH KONTROLÜ YAPILACAK
 static bool IsConstructedTag(string tag)
 {
-    int firstByte = Convert.ToInt32(tag.Length > 0 ? tag.Substring(0, 2) : "00", 16);
+    try
+    {
+        int firstByte = Convert.ToInt32(tag.Length > 0 ? tag.Substring(0, 2) : "00", 16);
 
-    // Constructed kontrolü yapılır. Bit 6 
-    //0x20(yani 32 ondalık veya 00100000 ikilik)
+        // Constructed kontrolü yapılır. Bit 6 
+        //0x20(yani 32 ondalık veya 00100000 ikilik)
 
-    return (firstByte & 0x20) == 0x20;
+        return (firstByte & 0x20) == 0x20;
+    }
+    catch (Exception)
+    {
+
+        return false;
+    }
+    
 }
 
 
