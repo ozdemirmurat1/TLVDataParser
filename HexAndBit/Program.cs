@@ -42,6 +42,7 @@ void RecursiveLoopTagValues(int x, int y, string h)
 
             tagListValue.Add(new TagList
             {
+                TagName=ConverterHexAndBinary.emvTagNames.Select(x=>x.Key==tagValue).ToString(),
                 TagValue = tagValue,
                 TagLentghValue = tagLengthValue,
                 DecimalTagValue = valueTag,
