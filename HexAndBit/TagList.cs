@@ -10,6 +10,6 @@ namespace HexAndBit
     {
         public string? TagValue { get; set; }
         public string? TagLentghValue { get; set; }
-        public string DecimalTagValue { get; set; }
+        public string? DecimalTagValue { get; set; }
     }
 }
