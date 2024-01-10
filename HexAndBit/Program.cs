@@ -11,7 +11,7 @@ RecursiveLoopTagValues(0, 2, h);
 foreach (var tag in tagListValue)
 {
     Console.ForegroundColor = ConsoleColor.Blue;
-    Console.WriteLine($"Tag: {tag.TagValue}, Length: {tag.TagLentghValue}, Value: {tag.DecimalTagValue}");
+    Console.WriteLine($"Tag: {tag.TagValue}, Length: {tag.TagLentghValue},TagName : {tag.TagName}, Value: {tag.DecimalTagValue}");
     Console.ResetColor();
 }
 
@@ -42,7 +42,10 @@ void RecursiveLoopTagValues(int x, int y, string h)
 
             tagListValue.Add(new TagList
             {
-                TagName=ConverterHexAndBinary.emvTagNames.Select(x=>x.Key==tagValue).ToString(),
+                TagName= ConverterHexAndBinary.emvTagNames
+                            .FirstOrDefault(x => x.Key.Equals(tagValue))
+                            .Value?
+                            .ToString() ?? "Unknown Tag",
                 TagValue = tagValue,
                 TagLentghValue = tagLengthValue,
                 DecimalTagValue = valueTag,
