@@ -26,16 +26,31 @@ namespace HexAndBit
 
         public static string HexToBinary2(string hex)
         {
-            if (string.IsNullOrEmpty(hex) || !IsValidHex(hex))
+            if (string.IsNullOrEmpty(hex))
             {
-                Console.WriteLine("Hata: Geçerli bir onaltılık sayı değil.");
-                return hex;
+                Console.WriteLine("Hata: Hex değeri boş veya null olamaz.");
+                throw new ArgumentException("Hata: Hex değeri boş veya null olamaz.");
             }
 
-            string binaryString = string.Join(string.Empty,
-                hex.Select(c => Convert.ToString(Convert.ToInt32(c.ToString(), 16), 2).PadLeft(4, '0')));
+            if (!IsValidHex(hex))
+            {
+                Console.WriteLine("Hata: Geçerli bir onaltılık sayı değil.");
+                throw new ArgumentException("Hata: Geçerli bir onaltılık sayı değil.");
+            }
 
-            return binaryString;
+            try
+            {
+                string binaryString = string.Join(string.Empty,
+                    hex.Select(c => Convert.ToString(Convert.ToInt32(c.ToString(), 16), 2).PadLeft(4, '0')));
+
+                return binaryString;
+            }
+            catch (Exception ex)
+            {
+                // Burada, dönüşüm sırasında oluşabilecek herhangi bir hatayı yakalayıp konsola yazdırıyoruz.
+                Console.WriteLine($"Bir hata oluştu: {ex.Message}");
+                throw new ArgumentException($"Bir hata oluştu: { ex.Message }");
+            }
         }
 
         private static bool IsValidHex(string hex)
